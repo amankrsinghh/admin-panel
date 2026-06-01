@@ -86,14 +86,14 @@ export function AddProduct({ editId }: { editId?: string }) {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="font-serif text-4xl">{editId ? "Edit Product" : "Add New Product"}</h1>
+          <h1 className="font-serif text-3xl sm:text-4xl">{editId ? "Edit Product" : "Add New Product"}</h1>
           <p className="mt-1 text-sm text-ink/60">
             Paste image URLs — no file uploads needed. Saves instantly to customer site.
           </p>
         </div>
-        <Button variant="outline" onClick={() => navigate("/products")}>← Back</Button>
+        <Button variant="outline" onClick={() => navigate("/products")} className="w-full sm:w-auto">← Back</Button>
       </div>
 
       <form onSubmit={submit} className="mt-8 grid gap-6 lg:grid-cols-3">
@@ -187,12 +187,12 @@ export function ManageProducts() {
 
   return (
     <div>
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="font-serif text-4xl">Manage Products</h1>
+          <h1 className="font-serif text-3xl sm:text-4xl">Manage Products</h1>
           <p className="mt-1 text-sm text-ink/60">{products.length} pieces in store</p>
         </div>
-        <Button onClick={() => navigate("/add")}>+ Add Product</Button>
+        <Button onClick={() => navigate("/add")} className="w-full sm:w-auto">+ Add Product</Button>
       </div>
 
       <div className="mt-6">

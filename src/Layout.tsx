@@ -34,7 +34,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
   );
 
   return (
-    <div className="min-h-screen bg-[#0f0f12] text-white">
+    <div className="min-h-screen bg-[#0f0f12] text-white overflow-x-hidden">
       {/* Topbar */}
       <header className="sticky top-0 z-30 border-b border-white/5 bg-[#0f0f12]/80 backdrop-blur lg:hidden">
         <div className="flex items-center justify-between px-4 py-3">
@@ -81,7 +81,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
           <div onClick={() => setOpen(false)} className="fixed inset-0 z-30 bg-black/40 lg:hidden fade-in" />
         )}
 
-        <main className="min-h-screen flex-1 bg-[#f5f3ee] text-ink">
+        <main className="min-h-screen flex-1 bg-[#f5f3ee] text-ink min-w-0 overflow-x-hidden">
           <div className="mx-auto max-w-6xl px-5 py-8 lg:px-10">
             {children}
           </div>
