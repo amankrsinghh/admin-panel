@@ -14,7 +14,7 @@ import type {
   CategoryItem,
 } from "./types";
 import { pushOrderToSheet } from "./googleSheets";
-import { firebaseConfig, db } from "./firebase";
+import { firebaseConfig, db, auth } from "./firebase";
 import {
   collection,
   doc,
@@ -24,6 +24,7 @@ import {
   deleteDoc,
   getDocs,
 } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
 
 type Listener<T> = (data: T) => void;
 
@@ -35,6 +36,7 @@ class Collection<T> {
   private fsColName: string;
   private listeners: Set<Listener<T[]>> = new Set();
   private inMemoryCache: T[] = [];
+  private unsubscribeFs: (() => void) | null = null;
 
   constructor(key: string, seed: T[] = [], idField: string = "id") {
     this.key = key;
@@ -62,48 +64,63 @@ class Collection<T> {
       return;
     }
 
-    const colRef = collection(db, this.fsColName);
+    // Subscribe to Auth state changes to dynamically manage active Firestore subscriptions
+    onAuthStateChanged(auth, async (fbUser) => {
+      // Safely tear down existing listener if active
+      if (this.unsubscribeFs) {
+        this.unsubscribeFs();
+        this.unsubscribeFs = null;
+      }
 
-    // Listen for real-time updates from Firestore
-    onSnapshot(colRef, (snapshot) => {
-      const list: T[] = [];
-      snapshot.forEach((d) => {
-        list.push({ [this.idField]: d.id, ...d.data() } as unknown as T);
-      });
+      if (fbUser) {
+        const colRef = collection(db, this.fsColName);
 
-      // Sort by createdAt descending to keep newest first (similar to unshift)
-      list.sort((a: any, b: any) => {
-        const timeA = a.createdAt || 0;
-        const timeB = b.createdAt || 0;
-        return timeB - timeA;
-      });
+        // Listen for real-time updates from Firestore under authenticated context
+        this.unsubscribeFs = onSnapshot(colRef, (snapshot) => {
+          const list: T[] = [];
+          snapshot.forEach((d) => {
+            list.push({ [this.idField]: d.id, ...d.data() } as unknown as T);
+          });
 
-      this.inMemoryCache = list;
-      
-      // Update localStorage backup with Firestore data to keep them in sync
-      localStorage.setItem(this.key, JSON.stringify(list));
-      
-      this.emit();
-    }, (error) => {
-      console.error(`Firestore error on collection ${this.fsColName}:`, error);
-    });
+          // Sort by createdAt descending to keep newest first (similar to unshift)
+          list.sort((a: any, b: any) => {
+            const timeA = a.createdAt || 0;
+            const timeB = b.createdAt || 0;
+            return timeB - timeA;
+          });
 
-    // Seed data if Firestore is empty on first load (e.g. for products)
-    if (this.fsColName === "products" && seed.length > 0) {
-      try {
-        const querySnapshot = await getDocs(colRef);
-        if (querySnapshot.empty) {
-          for (const item of seed) {
-            const data = { ...item } as any;
-            const id = data[this.idField];
-            delete data[this.idField];
-            await setDoc(doc(db, this.fsColName, id), data);
+          this.inMemoryCache = list;
+          
+          // Update localStorage backup with Firestore data to keep them in sync
+          localStorage.setItem(this.key, JSON.stringify(list));
+          
+          this.emit();
+        }, (error) => {
+          console.error(`Firestore error on collection ${this.fsColName}:`, error);
+        });
+
+        // Seed data if Firestore is empty on first load (e.g. for products)
+        if (this.fsColName === "products" && seed.length > 0) {
+          try {
+            const querySnapshot = await getDocs(colRef);
+            if (querySnapshot.empty) {
+              for (const item of seed) {
+                const data = { ...item } as any;
+                const id = data[this.idField];
+                delete data[this.idField];
+                await setDoc(doc(db, this.fsColName, id), data);
+              }
+            }
+          } catch (err) {
+            console.error(`Failed to seed Firestore ${this.fsColName}:`, err);
           }
         }
-      } catch (err) {
-        console.error(`Failed to seed Firestore ${this.fsColName}:`, err);
+      } else {
+        // User is logged out, clear cache or reset to seed/local data
+        this.inMemoryCache = [...seed];
+        this.emit();
       }
-    }
+    });
   }
 
   private idOf(x: T): string { return (x as Record<string, unknown>)[this.idField] as string; }
