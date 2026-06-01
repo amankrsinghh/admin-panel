@@ -44,28 +44,28 @@ export function AdminOrders() {
           <div key={o.id} className="rounded-2xl bg-white ring-1 ring-ink/5">
             <button
               onClick={() => setExpand(expand === o.id ? null : o.id)}
-              className="grid w-full grid-cols-2 items-center gap-3 px-5 py-4 text-left md:grid-cols-6"
+              className="grid w-full grid-cols-2 items-center gap-4 px-4 py-4 text-left md:grid-cols-6 md:px-5"
             >
-              <div className="md:col-span-2">
+              <div className="col-span-2 md:col-span-2">
                 <div className="font-medium">#{o.id}</div>
                 <div className="text-xs text-ink/50">{new Date(o.createdAt).toLocaleString()}</div>
               </div>
-              <div>
+              <div className="col-span-1 md:col-span-1">
                 <div className="text-xs text-ink/50">Customer</div>
-                <div className="text-sm font-medium">{o.customerName}</div>
+                <div className="text-sm font-medium truncate">{o.customerName}</div>
                 <div className="text-xs text-ink/60">{o.phone}</div>
               </div>
-              <div>
+              <div className="col-span-1 md:col-span-1">
                 <div className="text-xs text-ink/50">Total</div>
                 <div className="font-serif text-lg">{formatINR(o.total)}</div>
               </div>
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="col-span-2 flex flex-wrap items-center gap-2 md:col-span-1">
                 <Badge tone={o.orderStatus === "Delivered" || o.orderStatus === "Returned" ? "green" : o.orderStatus === "Cancelled" ? "red" : "amber"}>
                   {o.orderStatus}
                 </Badge>
                 <Badge tone={o.paymentStatus === "Paid" ? "green" : "amber"}>{o.paymentStatus}</Badge>
               </div>
-              <div className="text-right text-xs text-ink/50">
+              <div className="col-span-2 text-center text-xs text-ink/50 border-t border-ink/5 pt-2 mt-1 md:col-span-1 md:text-right md:border-t-0 md:pt-0 md:mt-0">
                 {expand === o.id ? "Hide ↑" : "Manage ↓"}
               </div>
             </button>

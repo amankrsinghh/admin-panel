@@ -53,7 +53,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
       <div className="flex">
         {/* Sidebar */}
         <aside className={
-          "fixed inset-y-0 left-0 z-40 w-64 bg-[#0a0a0d] p-5 transition lg:static lg:translate-x-0 " +
+          "fixed inset-y-0 left-0 z-40 w-64 bg-[#0a0a0d] p-5 transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 " +
           (open ? "translate-x-0" : "-translate-x-full")
         }>
           <div className="font-serif text-2xl">
@@ -78,7 +78,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
 
         {/* Overlay for mobile */}
         {open && (
-          <div onClick={() => setOpen(false)} className="fixed inset-0 z-30 bg-black/40 lg:hidden" />
+          <div onClick={() => setOpen(false)} className="fixed inset-0 z-30 bg-black/40 lg:hidden fade-in" />
         )}
 
         <main className="min-h-screen flex-1 bg-[#f5f3ee] text-ink">

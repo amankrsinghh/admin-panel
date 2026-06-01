@@ -203,8 +203,8 @@ export function ManageProducts() {
         />
       </div>
 
-      <div className="mt-6 overflow-hidden rounded-2xl bg-white ring-1 ring-ink/5">
-        <table className="w-full text-sm">
+      <div className="mt-6 overflow-x-auto rounded-2xl bg-white ring-1 ring-ink/5">
+        <table className="w-full min-w-[500px] text-sm">
           <thead className="bg-ink/[0.03] text-left text-[11px] uppercase tracking-wider text-ink/60">
             <tr>
               <th className="px-4 py-3">Product</th>

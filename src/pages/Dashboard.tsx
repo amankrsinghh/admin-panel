@@ -38,7 +38,7 @@ export function Dashboard() {
         </div>
       </div>
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4 sm:gap-4">
         <Stat label="Total Revenue" value={formatINR(revenue)} tone="rose" sub="+12% from last month" />
         <Stat label="Total Orders" value={String(orders.length)} sub={`${pending} awaiting action`} />
         <Stat label="Products" value={String(products.length)} sub="Active across 7 categories" />
@@ -49,20 +49,22 @@ export function Dashboard() {
         {/* Sales Chart Section */}
         <div className="lg:col-span-2">
           <Card title="Revenue Trend" subTitle="Daily sales performance">
-            <div className="mt-6 flex h-64 items-end gap-2 overflow-hidden px-2">
-              {[40, 70, 45, 90, 65, 85, 55, 30, 80, 95, 60, 75, 50, 85].map((h, i) => (
-                <div key={i} className="group relative flex-1">
-                  <div 
-                    className="w-full rounded-t-lg bg-rose-gold/20 transition-all group-hover:bg-rose-gold/50" 
-                    style={{ height: `${h}%` }}
-                  >
-                    <div className="absolute -top-8 left-1/2 -translate-x-1/2 rounded bg-ink px-2 py-1 text-[10px] text-white opacity-0 transition-opacity group-hover:opacity-100">
-                      ₹{h}k
+            <div className="mt-6 overflow-x-auto pb-2 scrollbar-thin">
+              <div className="flex h-64 items-end gap-2 px-2 min-w-[500px] lg:min-w-0">
+                {[40, 70, 45, 90, 65, 85, 55, 30, 80, 95, 60, 75, 50, 85].map((h, i) => (
+                  <div key={i} className="group relative flex-1">
+                    <div 
+                      className="w-full rounded-t-lg bg-rose-gold/20 transition-all group-hover:bg-rose-gold/50" 
+                      style={{ height: `${h}%` }}
+                    >
+                      <div className="absolute -top-8 left-1/2 -translate-x-1/2 rounded bg-ink px-2 py-1 text-[10px] text-white opacity-0 transition-opacity group-hover:opacity-100">
+                        ₹{h}k
+                      </div>
                     </div>
+                    <div className="mt-2 text-center text-[9px] text-ink/30">M{i+1}</div>
                   </div>
-                  <div className="mt-2 text-center text-[9px] text-ink/30">M{i+1}</div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </Card>
         </div>
@@ -100,7 +102,7 @@ export function Dashboard() {
                     </svg>
                   </div>
                   <div>
-                    <div className="font-medium">{o.customerName}</div>
+                    <div className="font-medium truncate max-w-[120px] sm:max-w-none">{o.customerName}</div>
                     <div className="text-xs text-ink/40">#{o.id} · {new Date(o.createdAt).toLocaleDateString()}</div>
                   </div>
                 </div>
@@ -144,10 +146,10 @@ function Stat({ label, value, sub, tone = "ink" }: { label: string; value: strin
     ? "from-amber-100 to-amber-50 text-amber-900"
     : "from-ink to-[#222] text-white";
   return (
-    <div className={`rounded-2xl bg-gradient-to-br ${grad} p-6 shadow-sm ring-1 ring-white/5`}>
+    <div className={`rounded-2xl bg-gradient-to-br ${grad} p-4 sm:p-6 shadow-sm ring-1 ring-white/5`}>
       <div className="text-[10px] uppercase tracking-[0.25em] opacity-80">{label}</div>
-      <div className="mt-3 font-serif text-3xl">{value}</div>
-      {sub && <div className="mt-2 text-[10px] opacity-70 border-t border-white/10 pt-2">{sub}</div>}
+      <div className="mt-2 sm:mt-3 font-serif text-2xl sm:text-3xl">{value}</div>
+      {sub && <div className="mt-2 text-[9px] sm:text-[10px] opacity-70 border-t border-white/10 pt-2">{sub}</div>}
     </div>
   );
 }
