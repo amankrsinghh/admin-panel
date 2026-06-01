@@ -141,7 +141,7 @@ export default function Categories() {
         </div>
 
         {/* Categories List */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 min-w-0">
           <div className="overflow-x-auto rounded-2xl bg-white shadow-sm ring-1 ring-ink/5">
             <table className="w-full min-w-[600px] text-left text-sm">
               <thead className="bg-ink/[0.02] text-[11px] uppercase tracking-wider text-ink/40">

@@ -47,12 +47,12 @@ export function Dashboard() {
 
       <div className="mt-8 grid gap-6 lg:grid-cols-3">
         {/* Sales Chart Section */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 min-w-0">
           <Card title="Revenue Trend" subTitle="Daily sales performance">
             <div className="mt-6 overflow-x-auto pb-2 scrollbar-thin">
               <div className="flex h-64 items-end gap-2 px-2 min-w-[500px] lg:min-w-0">
                 {[40, 70, 45, 90, 65, 85, 55, 30, 80, 95, 60, 75, 50, 85].map((h, i) => (
-                  <div key={i} className="group relative flex-1">
+                  <div key={i} className="group relative flex-1 h-full flex flex-col justify-end">
                     <div 
                       className="w-full rounded-t-lg bg-rose-gold/20 transition-all group-hover:bg-rose-gold/50" 
                       style={{ height: `${h}%` }}
@@ -61,7 +61,7 @@ export function Dashboard() {
                         ₹{h}k
                       </div>
                     </div>
-                    <div className="mt-2 text-center text-[9px] text-ink/30">M{i+1}</div>
+                    <div className="mt-2 text-center text-[9px] text-ink/30">{`M${i+1}`}</div>
                   </div>
                 ))}
               </div>
@@ -147,7 +147,7 @@ function Stat({ label, value, sub, tone = "ink" }: { label: string; value: strin
     : "from-ink to-[#222] text-white";
   return (
     <div className={`rounded-2xl bg-gradient-to-br ${grad} p-4 sm:p-6 shadow-sm ring-1 ring-white/5`}>
-      <div className="text-[10px] uppercase tracking-[0.25em] opacity-80">{label}</div>
+      <div className="text-[9px] sm:text-[10px] uppercase tracking-[0.1em] sm:tracking-[0.25em] opacity-80 break-words">{label}</div>
       <div className="mt-2 sm:mt-3 font-serif text-2xl sm:text-3xl">{value}</div>
       {sub && <div className="mt-2 text-[9px] sm:text-[10px] opacity-70 border-t border-white/10 pt-2">{sub}</div>}
     </div>
